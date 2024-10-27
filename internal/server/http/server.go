@@ -7,9 +7,9 @@ import (
 	"net/http"
 
 	killgrave "github.com/friendsofgo/killgrave/internal"
-  log "github.com/sirupsen/logrus"
-  "github.com/gorilla/handlers"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
 //go:embed cert/server.key
@@ -107,8 +107,8 @@ loop:
 	if s.proxy.mode == killgrave.ProxyMissing {
 		s.router.NotFoundHandler = s.proxy.Handler()
 	} else {
-    s.router.NotFoundHandler = s.defaultNotFoundHandler()
-  }
+		s.router.NotFoundHandler = s.defaultNotFoundHandler()
+	}
 	return nil
 }
 
@@ -177,11 +177,11 @@ func (s *Server) addImposterHandler(imposters []Imposter) {
 
 func (s *Server) defaultNotFoundHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-    log.WithFields(log.Fields{
-      "Method": r.Method,
-      "URL": r.URL,
-    }).Debugf("Request didn't match any imposter, and proxyMode is %v", s.proxy.mode)
-    w.WriteHeader(http.StatusNotFound)
+		log.WithFields(log.Fields{
+			"Method": r.Method,
+			"URL":    r.URL,
+		}).Debugf("Request didn't match any imposter, and proxyMode is %v", s.proxy.mode)
+		w.WriteHeader(http.StatusNotFound)
 	}
 }
 
