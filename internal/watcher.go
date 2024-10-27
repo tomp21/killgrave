@@ -2,6 +2,7 @@ package killgrave
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/radovskyb/watcher"
@@ -27,7 +28,8 @@ func InitializeWatcher(pathToWatch string) (*watcher.Watcher, error) {
 func AttachWatcher(w *watcher.Watcher, fn func()) {
 	go func() {
 		if err := w.Start(time.Millisecond * 100); err != nil {
-			log.Fatalln(err)
+			log.Error(err)
+			os.Exit(1)
 		}
 	}()
 
@@ -47,10 +49,10 @@ func readEventsFromWatcher(w *watcher.Watcher, fn func()) {
 		for {
 			select {
 			case evt := <-w.Event:
-				log.Println("Modified file:", evt.Name())
+				log.Info("Modified file:", evt.Name())
 				fn()
 			case err := <-w.Error:
-				log.Printf("Error checking file change: %+v", err)
+				log.Warnf("Error checking file change: %+v", err)
 			case <-w.Closed:
 				return
 			}
