@@ -26,6 +26,7 @@ const (
 	_defaultPort          = 3000
 	_defaultProxyMode     = killgrave.ProxyNone
 	_defaultStrictSlash   = true
+  _defaultLogLevel      = "info"
 
 	_impostersFlag = "imposters"
 	_configFlag    = "config"
@@ -35,6 +36,7 @@ const (
 	_secureFlag    = "secure"
 	_proxyModeFlag = "proxy-mode"
 	_proxyURLFlag  = "proxy-url"
+  _loglevelFlag  = "log-level"
 )
 
 var (
@@ -77,6 +79,7 @@ func NewKillgraveCmd() *cobra.Command {
 	rootCmd.Flags().BoolP(_secureFlag, "s", false, "Run mock server using TLS (https)")
 	rootCmd.Flags().StringP(_proxyModeFlag, "m", _defaultProxyMode.String(), "Proxy mode, the options are all, missing or none")
 	rootCmd.Flags().StringP(_proxyURLFlag, "u", "", "The url where the proxy will redirect to")
+  rootCmd.Flags().String(_loglevelFlag, _defaultLogLevel, "The log level to output")
 
 	rootCmd.SetVersionTemplate("Killgrave version: {{.Version}}\n")
 
