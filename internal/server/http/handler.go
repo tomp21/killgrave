@@ -2,10 +2,11 @@ package http
 
 import (
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // ImposterHandler create specific handler for the received imposter

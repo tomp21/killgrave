@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,6 +13,7 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/radovskyb/watcher"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 

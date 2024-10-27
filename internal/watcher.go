@@ -2,10 +2,10 @@ package killgrave
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/radovskyb/watcher"
+	log "github.com/sirupsen/logrus"
 )
 
 // InitializeWatcher initialize a watcher to check for modification on all files
