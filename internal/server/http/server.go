@@ -83,6 +83,7 @@ func PrepareAccessControl(config killgrave.ConfigCORS) (h []handlers.CORSOption)
 func (s *Server) Build() error {
 	if s.proxy.mode == killgrave.ProxyAll {
 		// not necessary load the imposters if you will use the tool as a proxy
+		log.Infoln("ProxyAll mode enabled, no imposter will be used")
 		s.router.PathPrefix("/").HandlerFunc(s.proxy.Handler())
 		return nil
 	}
@@ -106,8 +107,10 @@ loop:
 		}
 	}
 	if s.proxy.mode == killgrave.ProxyMissing {
+		log.Infof("Proxying missed requests to: %v", s.proxy.url)
 		s.router.NotFoundHandler = s.proxy.Handler()
 	} else {
+		log.Infoln("No proxy has been configured for non-matching requests, defaulting to a 404 response")
 		s.router.NotFoundHandler = s.defaultNotFoundHandler()
 	}
 	return nil
@@ -144,7 +147,6 @@ func (s *Server) run(secure bool) error {
 	s.httpServer.TLSConfig = &tls.Config{
 		Certificates: []tls.Certificate{cert},
 	}
-
 	return s.httpServer.ListenAndServeTLS("", "")
 }
 

@@ -19,6 +19,7 @@ func InitializeWatcher(pathToWatch string) (*watcher.Watcher, error) {
 	if err := w.AddRecursive(pathToWatch); err != nil {
 		return nil, fmt.Errorf("%w: error trying to watch change on %s directory", err, pathToWatch)
 	}
+	log.Infof("Watching for changes in: %v\n", pathToWatch)
 	return w, nil
 }
 
