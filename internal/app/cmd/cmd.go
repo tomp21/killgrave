@@ -131,11 +131,13 @@ func runServer(cfg killgrave.Config) server.Server {
 	proxyServer, err := server.NewProxy(cfg.Proxy.Url, cfg.Proxy.Mode)
 	if err != nil {
 		log.Fatal(err)
+		os.Exit(1)
 	}
 
 	imposterFs, err := server.NewImposterFS(cfg.ImpostersPath)
 	if err != nil {
 		log.Fatal(err)
+		os.Exit(1)
 	}
 
 	s := server.NewServer(
@@ -147,6 +149,7 @@ func runServer(cfg killgrave.Config) server.Server {
 	)
 	if err := s.Build(); err != nil {
 		log.Fatal(err)
+		os.Exit(1)
 	}
 
 	s.Run()
@@ -162,6 +165,7 @@ func runWatcher(cfg killgrave.Config, currentSrv *server.Server) (*watcher.Watch
 	killgrave.AttachWatcher(w, func() {
 		if err := currentSrv.Shutdown(); err != nil {
 			log.Fatal(err)
+			os.Exit(1)
 		}
 		*currentSrv = runServer(cfg)
 	})
