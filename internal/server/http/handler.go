@@ -44,7 +44,7 @@ func writeBody(i Imposter, r Response, w http.ResponseWriter) {
 
 func fetchBodyFromFile(bodyFile string) (bytes []byte) {
 	if _, err := os.Stat(bodyFile); os.IsNotExist(err) {
-		log.Printf("the body file %s not found\n", bodyFile)
+		log.Warnf("the body file %s not found\n", bodyFile)
 		return
 	}
 
@@ -52,7 +52,7 @@ func fetchBodyFromFile(bodyFile string) (bytes []byte) {
 	defer f.Close()
 	bytes, err := io.ReadAll(f)
 	if err != nil {
-		log.Printf("imposible read the file %s: %v\n", bodyFile, err)
+		log.Warnf("imposible read the file %s: %v\n", bodyFile, err)
 	}
 	return
 }

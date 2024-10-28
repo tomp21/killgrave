@@ -121,7 +121,7 @@ func (s *Server) Run() {
 		if s.secure {
 			tlsString = "(TLS mode)"
 		}
-		log.Printf("The fake server is on tap now: %s%s\n", s.httpServer.Addr, tlsString)
+		log.Infof("The fake server is on tap now: %s%s\n", s.httpServer.Addr, tlsString)
 		err := s.run(s.secure)
 		if err != http.ErrServerClosed {
 			log.Fatal(err)
