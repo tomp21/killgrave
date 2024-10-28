@@ -90,6 +90,12 @@ func runHTTP(cmd *cobra.Command, cfg killgrave.Config) error {
 	done := make(chan os.Signal, 1)
 	defer close(done)
 
+	logLevel, err := log.ParseLevel(cfg.Log.Level)
+	if err != nil {
+		return fmt.Errorf("Could not parse log level: %v", err)
+	}
+	log.SetLevel(logLevel)
+
 	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)
 
 	srv := runServer(cfg)
@@ -193,7 +199,16 @@ func prepareConfig(cmd *cobra.Command) (killgrave.Config, error) {
 		return killgrave.Config{}, err
 	}
 
-	return cfg, configureProxyMode(cmd, &cfg)
+	if err := configureProxyMode(cmd, &cfg); err != nil {
+		return killgrave.Config{}, err
+
+	}
+
+	if err := configureLogging(cmd, &cfg); err != nil {
+		return killgrave.Config{}, err
+	}
+
+	return cfg, nil
 }
 
 func configureProxyMode(cmd *cobra.Command, cfg *killgrave.Config) error {
@@ -219,5 +234,14 @@ func configureProxyMode(cmd *cobra.Command, cfg *killgrave.Config) error {
 		}
 	}
 	cfg.ConfigureProxy(pMode, url)
+	return nil
+}
+
+func configureLogging(cmd *cobra.Command, cfg *killgrave.Config) error {
+	logLevel, err := cmd.Flags().GetString(_loglevelFlag)
+	if err != nil {
+		return err
+	}
+	cfg.Log.Level = logLevel
 	return nil
 }

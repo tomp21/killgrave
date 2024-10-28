@@ -4,7 +4,9 @@ import (
 	"context"
 	"crypto/tls"
 	_ "embed"
+	"fmt"
 	"net/http"
+	"os"
 
 	killgrave "github.com/friendsofgo/killgrave/internal"
 	"github.com/gorilla/handlers"
@@ -97,7 +99,6 @@ loop:
 		select {
 		case imposters := <-impostersCh:
 			s.addImposterHandler(imposters)
-			log.Printf("imposter %s loaded\n", imposters[0].Path)
 		case <-done:
 			close(impostersCh)
 			close(done)
@@ -124,6 +125,7 @@ func (s *Server) Run() {
 		err := s.run(s.secure)
 		if err != http.ErrServerClosed {
 			log.Fatal(err)
+			os.Exit(1)
 		}
 	}()
 }
@@ -136,6 +138,7 @@ func (s *Server) run(secure bool) error {
 	cert, err := tls.X509KeyPair(serverCert, serverKey)
 	if err != nil {
 		log.Fatal(err)
+		os.Exit(1)
 	}
 
 	s.httpServer.TLSConfig = &tls.Config{
@@ -147,9 +150,9 @@ func (s *Server) run(secure bool) error {
 
 // Shutdown shutdown the current http server
 func (s *Server) Shutdown() error {
-	log.Println("stopping server...")
+	log.Info("stopping server...")
 	if err := s.httpServer.Shutdown(context.TODO()); err != nil {
-		log.Fatalf("Server Shutdown Failed:%+v", err)
+		return fmt.Errorf("Server Shutdown Failed:%+v", err)
 	}
 
 	return nil
@@ -172,19 +175,18 @@ func (s *Server) addImposterHandler(imposters []Imposter) {
 				r.Queries(k, v)
 			}
 		}
+		log.WithFields(imposter.LogFields()).Debugln("imposter loaded")
 	}
 }
 
 func (s *Server) defaultNotFoundHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.WithFields(log.Fields{
-			"Method": r.Method,
-			"URL":    r.URL,
-		}).Debugf("Request didn't match any imposter, and proxyMode is %v", s.proxy.mode)
+		log.WithFields(killgrave.LogFieldsFromRequest(r)).Debugf("Request didn't match any imposter, and proxyMode is %v", s.proxy.mode)
 		w.WriteHeader(http.StatusNotFound)
 	}
 }
 
+// not used?
 func (s *Server) handleAll(h http.HandlerFunc) {
 	s.router.PathPrefix("/").HandlerFunc(h)
 }
