@@ -127,7 +127,7 @@ func (s *Server) Run() {
 		log.Infof("The fake server is on tap now: %s%s\n", s.httpServer.Addr, tlsString)
 		err := s.run(s.secure)
 		if err != http.ErrServerClosed {
-			log.Fatal(err)
+			log.Error(err)
 			os.Exit(1)
 		}
 	}()
@@ -140,7 +140,7 @@ func (s *Server) run(secure bool) error {
 
 	cert, err := tls.X509KeyPair(serverCert, serverKey)
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 		os.Exit(1)
 	}
 
