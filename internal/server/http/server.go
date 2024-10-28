@@ -185,6 +185,7 @@ func (s *Server) defaultNotFoundHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(killgrave.LogFieldsFromRequest(r)).Debugf("Request didn't match any imposter, and proxyMode is %v", s.proxy.mode)
 		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("404 page not found\n"))
 	}
 }
 
