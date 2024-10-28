@@ -19,6 +19,7 @@ func ImposterHandler(i Imposter) http.HandlerFunc {
 		writeHeaders(res, w)
 		w.WriteHeader(res.Status)
 		writeBody(i, res, w)
+		log.WithFields(i.LogFields()).Debugf("Request matched handler")
 	}
 }
 
